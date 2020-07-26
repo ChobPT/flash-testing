@@ -32,7 +32,19 @@
       $apiResponse = curl_exec($ch);
       curl_close($ch);
       $jsonArrayResponse = json_decode($apiResponse);
-      $url = $jsonArrayResponse[0]->data->getLiveInfo->programInfo->streamInfo[1]->playUrl;
+      $jsonArrayFiedResponse = json_decode($apiResponse,true);
+      // echo "<!--";
+      //var_dump($jsonArrayResponse);
+      $qualityKey=0;
+      foreach($jsonArrayFiedResponse[0]["data"]["getLiveInfo"]["programInfo"]["streamInfo"] as $key => $quality){
+        echo "<br>".$quality["desc"];
+        if(strtolower($quality["desc"])==strtolower($_GET["qlt"])){
+          $qualityKey=$key;
+        }
+      }
+	    // echo "-->";
+      $url = str_replace('http:','https:',$jsonArrayResponse[0]->data->getLiveInfo->programInfo->streamInfo[$qualityKey]->playUrl);
+	    // echo "<br>URL".$url."<br>";
     }
   ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flv.js/1.5.0/flv.min.js"></script>
